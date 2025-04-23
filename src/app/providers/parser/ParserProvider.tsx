@@ -61,7 +61,7 @@ export function ParserProvider(props: PropsWithChildren) {
         return data
     } 
 
-    const uploadFile = (file: File, timeoutSeconds: number = 30) => {
+    const uploadFile = (file: File, timeoutSeconds: number = 120) => {
         // prevent premature aborts on Firefox
         const controller = new AbortController()
 
