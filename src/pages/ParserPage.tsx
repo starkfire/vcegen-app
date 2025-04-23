@@ -1,4 +1,3 @@
-import { Outlet, useNavigation } from "react-router";
 import { 
     SidebarProvider,
     SidebarInset,
@@ -6,17 +5,11 @@ import {
 } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/Sidebar";
 import { StagingPad } from "@/components/StagingPad";
-import { ParserProvider, useParser } from "@/app/providers/parser"
+import { ParserProvider } from "@/app/providers/parser"
 import { ResetParserButton } from "@/components/ResetParserButton";
 import { ExportOutputButton } from "@/components/ExportOutputButton";
 
-function FallbackComponent() {
-    return <p>Loading...</p>;
-}
-
 export default function ParserPage() {
-    const { state } = useNavigation()
-
     return (
         <ParserProvider>
             <SidebarProvider>
