@@ -24,6 +24,7 @@ type ParserContextType = {
     results: Result[],
     invalidRows: Result[],
     isLoading: boolean,
+    serverReady: boolean,
     boxedChoices: boolean,
     excludeRationale: boolean,
     setFile: Dispatch<SetStateAction<File | null>>,
@@ -31,6 +32,7 @@ type ParserContextType = {
     setResults: Dispatch<SetStateAction<Result[]>>,
     setInvalidRows: Dispatch<SetStateAction<Result[]>>,
     setIsLoading: Dispatch<SetStateAction<boolean>>,
+    setServerReady: Dispatch<SetStateAction<boolean>>,
     setBoxedChoices: Dispatch<SetStateAction<boolean>>,
     setExcludeRationale: Dispatch<SetStateAction<boolean>>,
     uploadFile: (file: File) => Promise<AxiosResponse<AnalyzeResponse, any>>,
@@ -44,6 +46,7 @@ export function ParserProvider(props: PropsWithChildren) {
     const [strategy, setStrategy] = useState<Strategy>("standard")
     const [results, setResults] = useState<Result[]>([])
     const [invalidRows, setInvalidRows] = useState<Result[]>([])
+    const [serverReady, setServerReady] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [boxedChoices, setBoxedChoices] = useState<boolean>(false)
     const [excludeRationale, setExcludeRationale] = useState<boolean>(false)
@@ -59,7 +62,16 @@ export function ParserProvider(props: PropsWithChildren) {
         if (excludeRationale) data.append("exclude_rationale", "true")
 
         return data
-    } 
+    }
+
+    const startServer = (timeoutSeconds: number = 120) => {
+        const controller = new AbortController()
+
+        return axios.get("/", {
+            timeout: timeoutSeconds * 1000,
+            signal: controller.signal
+        })
+    }
 
     const uploadFile = (file: File, timeoutSeconds: number = 120) => {
         // prevent premature aborts on Firefox
@@ -83,6 +95,12 @@ export function ParserProvider(props: PropsWithChildren) {
         setInvalidRows([])
         setIsLoading(false)
     }
+
+    useEffect(() => {
+        startServer().then((_) => {
+            setServerReady(true)
+        })
+    }, [])
 
     useEffect(() => {
         if (file === null) {
@@ -119,6 +137,7 @@ export function ParserProvider(props: PropsWithChildren) {
             results,
             invalidRows,
             isLoading,
+            serverReady,
             boxedChoices,
             excludeRationale,
             setFile,
@@ -126,12 +145,13 @@ export function ParserProvider(props: PropsWithChildren) {
             setResults,
             setInvalidRows,
             setIsLoading,
+            setServerReady,
             setBoxedChoices,
             setExcludeRationale,
             uploadFile,
             reset
         }
-    }, [file, isLoading, results, strategy, boxedChoices, excludeRationale, invalidRows])
+    }, [file, isLoading, results, strategy, boxedChoices, excludeRationale, invalidRows, serverReady])
 
     return (
         <ParserContext.Provider value={value}>

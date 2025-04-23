@@ -128,6 +128,16 @@ export function StagingPad(props: StagingPadProps) {
     return (
         <div>
             {
+                (!parser.serverReady) && (
+                    <div className="flex justify-center items-center min-h-[90vh]">
+                        <div className="flex items-center">
+                            <Loader2 className="size-3 animate-spin" />
+                            <span className="ml-2 text-gray-600">Starting the server...</span>
+                        </div>
+                    </div>
+                )
+            }
+            {
                 (!parser.isLoading && !parser.file) && (
                     <Dropzone
                         accept={{
