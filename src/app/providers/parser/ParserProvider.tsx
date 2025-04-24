@@ -50,6 +50,7 @@ export function ParserProvider(props: PropsWithChildren) {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [boxedChoices, setBoxedChoices] = useState<boolean>(false)
     const [excludeRationale, setExcludeRationale] = useState<boolean>(false)
+    const [lastPingTime, setLastPingTime] = useState<number | null>(null)
     
     const axios = http()
 
@@ -101,6 +102,18 @@ export function ParserProvider(props: PropsWithChildren) {
             setServerReady(true)
         })
     }, [])
+    
+    useEffect(() => {
+        const wakeTimer = setTimeout(() => {
+            startServer().then((_) => {
+                setServerReady(true)
+            }).catch((_) => {
+                setServerReady(false)
+            })
+        }, 1000 * 60 * 2)
+
+        return () => clearTimeout(wakeTimer)
+    }, [lastPingTime])
 
     useEffect(() => {
         if (file === null) {
