@@ -64,7 +64,7 @@ export function ParserProvider(props: PropsWithChildren) {
         return data
     }
 
-    const startServer = (timeoutSeconds: number = 120) => {
+    const startServer = (timeoutSeconds: number = 180) => {
         const controller = new AbortController()
 
         return axios.get("/", {
@@ -73,7 +73,7 @@ export function ParserProvider(props: PropsWithChildren) {
         })
     }
 
-    const uploadFile = (file: File, timeoutSeconds: number = 120) => {
+    const uploadFile = (file: File, timeoutSeconds: number = 180) => {
         // prevent premature aborts on Firefox
         const controller = new AbortController()
 
