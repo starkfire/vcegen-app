@@ -109,6 +109,8 @@ export function ParserProvider(props: PropsWithChildren) {
                 setServerReady(true)
             }).catch((_) => {
                 setServerReady(false)
+            }).finally(() => {
+                setLastPingTime(Math.floor(Date.now() / 1000))
             })
         }, 1000 * 60 * 2)
 
